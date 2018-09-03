@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
 import {connect} from "react-redux"
-import {increment} from "./ducks/counter"
+import {increment, decrement, undo, redo} from "./ducks/counter"
 
 class Counter extends Component {
   render() {
-    const {currentValue, message, increment} = this.props
+    const {currentValue, message, increment, decrement, undo, state, redo} = this.props
     return (
       <div className="app">
         <section className="counter">
@@ -26,28 +26,36 @@ class Counter extends Component {
             </button>
             <button
               className="counter__button decrement-one"
-              onClick={() => null}
+              onClick={() => decrement(1)}
             >
               -1
             </button>
             <button
               className="counter__button decrement-five"
-              onClick={() => null}
+              onClick={() => decrement(5)}
             >
               -5
             </button>
             <br />
             <button
               className="counter__button undo"
-              disabled={true}
-              onClick={() => null}
+              disabled={state.previousValues.length === 0
+              ?
+                true
+              :
+                false}
+              onClick={() => undo()}
             >
               Undo
             </button>
             <button
               className="counter__button redo"
-              disabled={true}
-              onClick={() => null}
+              disabled={state.futureValues.length === 0
+              ?
+                true
+              :
+                false}
+              onClick={() => redo()}
             >
               Redo
             </button>
@@ -70,7 +78,10 @@ function getDataFromAppState(appState) {
 }
 
 const actionOutputs = {
-  increment: increment
+  increment: increment,
+  decrement: decrement,
+  undo: undo,
+  redo: redo
 }
 
 const connected = connect(getDataFromAppState, actionOutputs)
